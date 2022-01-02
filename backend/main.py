@@ -1,11 +1,7 @@
 from fastapi import FastAPI
-import mysql.connector as connector
+import sqlite3
 
-database = connector.connect(
-    host="localhost",
-    user="admin",
-    password=""  # NOSONAR
-)
+connection = sqlite3.connect(':memory:')
 
 app = FastAPI()
 
