@@ -22,7 +22,8 @@ async def root(level_id: int, response: Response):
                 'id': maybe_level[0],
                 'title': maybe_level[1],
                 'description': maybe_level[2],
-                'question': maybe_level[3].split(',')
+                'hint': maybe_level[3],
+                'question': maybe_level[4].split(',')
             }
     except Exception as e:
         print(e)
