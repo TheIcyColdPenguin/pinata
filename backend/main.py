@@ -52,7 +52,7 @@ async def attempt(level_id: int, attempt_details: Attempt, response: Response):
         )
 
         run_query_in_memory(initialise_db, generated_query)
-        
+
     except Exception as e:
         print(e)
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
