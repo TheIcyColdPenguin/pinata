@@ -5,7 +5,7 @@
     margin: 0;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1.5fr 2fr 6.5fr;
+    grid-template-rows: 1.5fr 2fr 1fr 5.5fr;
 }
 
 .grid > div {
@@ -18,8 +18,13 @@
     font-size: x-large;
 }
 
-.grid form > button pre {
-    white-space: nowrap;
-    text-align: center;
-    display: inline;
+.grid .level-picker {
+    width: 25vw;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.grid .level-picker > * {
+    width: 10vw;
 }
