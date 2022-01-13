@@ -18,6 +18,20 @@ initialise(db_connection)  # create and hydrate database if not already done
 app = FastAPI()
 
 
+@app.get('/levels/all')
+async def levels_all(response: Response):
+    try:
+        level_names = db_connection.execute(
+            'SELECT title FROM levels ORDER BY id;',
+        ).fetchall()
+        return [i for j in level_names for i in j]
+    except Exception as e:
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    return {}
+
+
 @app.get("/levels/{level_id}")
 async def levels(level_id: int, response: Response):
     try:
