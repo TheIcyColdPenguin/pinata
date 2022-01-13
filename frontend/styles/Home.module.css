@@ -1,0 +1,25 @@
+.grid {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1.5fr 2fr 6.5fr;
+}
+
+.grid > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid > .title {
+    font-size: x-large;
+}
+
+.grid form > button pre {
+    white-space: nowrap;
+    text-align: center;
+    display: inline;
+}
