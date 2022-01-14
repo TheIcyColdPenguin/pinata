@@ -1,6 +1,6 @@
 from pathlib import Path
 from sqlite3 import Connection, IntegrityError, connect
-from typing import Optional, TypedDict
+from typing import List, Optional, TypedDict
 
 
 class LevelDetails(TypedDict):
@@ -8,7 +8,7 @@ class LevelDetails(TypedDict):
     title: str
     description: str
     hint: str
-    question: list[str]
+    question: List[str]
     initialise_db: str
 
 

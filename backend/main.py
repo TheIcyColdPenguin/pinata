@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import FastAPI, status, Response
 import sqlite3
 
@@ -9,7 +11,7 @@ from .data import get_level, initialise, run_query_in_memory
 
 
 class Attempt(BaseModel):
-    user_input: list[str]
+    user_input: List[str]
 
 
 db_connection = sqlite3.connect('level_data.db')
