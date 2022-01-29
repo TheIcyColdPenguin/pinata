@@ -1,14 +1,53 @@
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
 import type { LevelDetails } from '../../types';
 
+import { Code } from '../../components/Code';
+
+import styles from '../../styles/Level.module.css';
+import { ChangeEvent, useEffect, useState } from 'react';
+
 const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
+    const [inputs, setInputs] = useState(Array(level.question.length - 1).fill(''));
+    const [generatedQuery, setGeneratedQuery] = useState(
+        level.question
+            .flatMap((v, i) => [v, inputs[i]])
+            .filter(i => i)
+            .join('')
+    );
+
+    useEffect(() => {
+        setGeneratedQuery(
+            level.question
+                .flatMap((v, i) => [v, inputs[i]])
+                .filter(i => i)
+                .join('')
+        );
+    }, [inputs]);
+
+    const onInput = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+        setInputs(prevInputs => {
+            const newInputs = [...prevInputs];
+            newInputs[index] = e.target.value;
+            return newInputs;
+        });
+    };
+
     return (
-        <div>
-            <div>{level.id}</div>
-            <div>{level.title}</div>
-            <div>{level.description}</div>
-            <div>{level.hint}</div>
-            <div>{level.question}</div>
+        <div className={styles['main']}>
+            <div className={styles['title']}>{level.title}</div>
+            <div className={styles['desc']}>{level.description}</div>
+            <div className={styles['hint']}>{level.hint}</div>
+            <div className={styles['query']}>
+                <Code code={level.question.join('')} />
+            </div>
+            <div className={styles['input']}>
+                {inputs.map((v, i) => (
+                    <input key={i} value={v} onChange={e => onInput(e, i)} />
+                ))}
+            </div>
+            <div className={styles['generated']}>
+                <Code code={generatedQuery} />
+            </div>
         </div>
     );
 };

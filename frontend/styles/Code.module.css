@@ -1,0 +1,7 @@
+div.code {
+    padding: 0.5rem;
+}
+
+div.code code {
+    border-radius: 15px;
+}

@@ -1,0 +1,52 @@
+.main {
+    width: 100vw;
+    height: 75vh;
+    display: grid;
+    grid-template-areas:
+        'title title'
+        'desc desc'
+        'hint hint'
+        'query query'
+        'input input'
+        'generated generated';
+
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 3fr 2fr 1fr 2fr 2fr 2fr;
+    justify-content: center;
+}
+
+.main > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    margin: 0;
+    font-size: xx-large;
+    font-weight: bold;
+    grid-area: title;
+}
+.desc {
+    grid-area: desc;
+}
+.hint {
+    grid-area: hint;
+}
+.query {
+    grid-area: query;
+}
+
+div.input {
+    grid-area: input;
+    width: 50%;
+    justify-self: center;
+    justify-content: space-evenly;
+}
+
+.input input {
+}
+
+.generated {
+    grid-area: generated;
+}
