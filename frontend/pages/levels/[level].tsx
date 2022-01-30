@@ -6,22 +6,19 @@ import { Code } from '../../components/Code';
 import styles from '../../styles/Level.module.css';
 import { ChangeEvent, useEffect, useState } from 'react';
 
+const generateQuery = (template: string[], inputs: string[]) => {
+    return template
+        .flatMap((v, i) => [v, inputs[i]])
+        .filter(i => i)
+        .join('');
+};
+
 const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
-    const [inputs, setInputs] = useState(Array(level.question.length - 1).fill(''));
-    const [generatedQuery, setGeneratedQuery] = useState(
-        level.question
-            .flatMap((v, i) => [v, inputs[i]])
-            .filter(i => i)
-            .join('')
-    );
+    const [inputs, setInputs] = useState<string[]>(Array(level.question.length - 1).fill(''));
+    const [generatedQuery, setGeneratedQuery] = useState(generateQuery(level.question, inputs));
 
     useEffect(() => {
-        setGeneratedQuery(
-            level.question
-                .flatMap((v, i) => [v, inputs[i]])
-                .filter(i => i)
-                .join('')
-        );
+        setGeneratedQuery(generateQuery(level.question, inputs));
     }, [inputs]);
 
     const onInput = (e: ChangeEvent<HTMLInputElement>, index: number) => {
