@@ -21,7 +21,6 @@ export const Code: FC<{ code: string }> = ({ code }) => {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
-            console.log(elem.current.innerHTML);
             hljs.highlightElement(elem.current);
         }
     });
