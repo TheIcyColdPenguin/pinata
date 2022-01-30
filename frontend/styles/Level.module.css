@@ -44,9 +44,6 @@ div.input {
     justify-content: space-evenly;
 }
 
-.input input {
-}
-
 .generated {
     grid-area: generated;
 }
