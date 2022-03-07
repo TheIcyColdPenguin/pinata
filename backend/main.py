@@ -15,6 +15,10 @@ class Attempt(BaseModel):
     user_input: List[str]
 
 
+class Verify(BaseModel):
+    maybe_flag: str
+
+
 db_connection = sqlite3.connect('level_data.db')
 initialise(db_connection)  # create and hydrate database if not already done
 
@@ -86,6 +90,24 @@ async def attempt(level_id: int, attempt_details: Attempt, response: Response):
         )
         return {'query_result': result, 'column_names': column_names}
 
+    except Exception as e:
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    return {}
+
+
+@app.post('/verify/{level_id}')
+async def verify(level_id: int, attempt_details: Verify, response: Response):
+    try:
+        # get level details
+        level_details = get_level(db_connection, level_id)
+
+        if level_details is None:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return {}
+
+        return {'correct': attempt_details.maybe_flag == level_details['flag']}
     except Exception as e:
         print(e)
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

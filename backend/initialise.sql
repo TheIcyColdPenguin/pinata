@@ -4,11 +4,12 @@ CREATE TABLE IF NOT EXISTS levels (
         description TEXT,
         hint TEXT,
         question VARCHAR(255),
-        initialise_db TEXT
+        initialise_db TEXT,
+        flag VARCHAR(255)
 );
 
 
-INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db) VALUES(
+INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db, flag) VALUES(
                 0,
                 'The Basics',
                 'This is the most basic exploit,
@@ -27,10 +28,11 @@ The initial query could be',
                 INSERT INTO users(username, password) VALUES (''frenkeldefects'', ''sadcatthumb'');
                 INSERT INTO users(username, password) VALUES (''midorisensei'', ''wolf gupta'');
                 INSERT INTO users(username, password) VALUES (''flag_is_here'', ''flag{sql_1nj3ct10n_15_co0l}'');
-                '
+                ',
+                'flag{sql_1nj3ct10n_15_co0l}'
         );
 
-INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db)
+INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db, flag)
 VALUES(
                 1,
                 'Exercise 2',
@@ -49,10 +51,11 @@ VALUES(
                 INSERT INTO ITEMS(name, price, thumbnail) VALUES (''pacman memorial'', 5000000, '''');
                 INSERT INTO ITEMS(name, price, thumbnail) VALUES (''ayaya'', 0, '''');
                 INSERT INTO ITEMS(name, price, thumbnail) VALUES (''flag'', 10000000, ''flag{j01n_4_un10n_t0d4y!}'');
-                '
+                ',
+                'flag{j01n_4_un10n_t0d4y!}'
         );
 
-INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db)
+INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db, flag)
 VALUES(
                 2,
                 'Exercise 3',
@@ -70,10 +73,11 @@ VALUES(
                 INSERT INTO users(username, password) VALUES (''frenkeldefects'', ''sadcatthumb'');
                 INSERT INTO users(username, password) VALUES (''midorisensei'', ''wolf gupta'');
                 INSERT INTO users(username, password) VALUES (''flag_is_here'', ''flag{l1ttl3_b0bby_t4bl3s}'');
-                '
+                ',
+                'flag{l1ttl3_b0bby_t4bl3s}'
         );
 
-INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db)
+INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db, flag)
 VALUES(
                 3,
                 'Exercise 4',
@@ -91,6 +95,7 @@ VALUES(
                 INSERT INTO users(username, password) VALUES (''ayaya'', ''amogsus'');
                 INSERT INTO users(username, password) VALUES (''frenkeldefects'', ''sadcatthumb'');
                 INSERT INTO users(username, password) VALUES (''midorisensei'', ''wolf gupta'');
-                INSERT INTO users(username, password) VALUES (''flag_is_here'', ''flag{l1ttl3_b0bby_t4bl3s}'');
-                '
+                INSERT INTO users(username, password) VALUES (''flag_is_here'', ''flag{gr0wn_up_b0bby_t4bl3s}'');
+                ',
+                'flag{gr0wn_up_b0bby_t4bl3s}'
         );

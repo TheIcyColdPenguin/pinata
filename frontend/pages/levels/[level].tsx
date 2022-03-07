@@ -1,4 +1,6 @@
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
+
 import type { LevelDetails } from '../../types';
 
 import { Code } from '../../components/Code';
@@ -23,6 +25,9 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
     const [inputs, setInputs] = useState<string[]>(Array(level.question.length - 1).fill(''));
     const [generatedQuery, setGeneratedQuery] = useState(generateQuery(level.question, inputs));
     const [queryResult, setQueryResult] = useState<Table>();
+    const [flagInput, setFlagInput] = useState<string>('');
+
+    const router = useRouter();
 
     useEffect(() => {
         setGeneratedQuery(generateQuery(level.question, inputs));
@@ -34,6 +39,10 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
             newInputs[index] = e.target.value;
             return newInputs;
         });
+    };
+
+    const handleFlag = (e: ChangeEvent<HTMLInputElement>) => {
+        setFlagInput(e.target.value);
     };
 
     const attemptlevel = async () => {
@@ -62,6 +71,31 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
             columnNames: res.column_names,
             rows: res.query_result,
         });
+    };
+
+    const verifyLevel = async () => {
+        const serverRes = await fetch(`http://localhost:8000/verify/${level.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ maybe_flag: flagInput }),
+        });
+
+        if (!serverRes.ok) {
+            alert('ono');
+            return;
+            // TODO: do smth like show a proper popup
+        }
+
+        const res = await serverRes.json();
+
+        if (res.correct) {
+            alert('Congrats! You got the flag!');
+            router.push('/');
+        } else {
+            alert("Welp, that isn't the flag");
+        }
     };
 
     return (
@@ -102,6 +136,22 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
                             </table>
                         </code>
                     </pre>
+                )}
+            </div>
+            <div className={styles['verify']}>
+                {queryResult && (
+                    <>
+                        <div>Enter flag: </div>
+                        <input
+                            value={flagInput}
+                            onChange={handleFlag}
+                            onKeyUp={e => {
+                                if (e.key == 'Enter') {
+                                    verifyLevel();
+                                }
+                            }}
+                        />
+                    </>
                 )}
             </div>
         </div>

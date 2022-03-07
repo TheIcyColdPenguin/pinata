@@ -1,6 +1,6 @@
 .main {
     width: 100vw;
-    height: 90vh;
+    height: 95vh;
     display: grid;
     grid-template-areas:
         'title title'
@@ -11,10 +11,10 @@
         'attempt attempt'
         'generated generated'
         'table table'
-        'table table';
+        'table table'
+        'verify verify';
 
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 3fr 2fr 1fr 2fr 1fr 1fr 2fr;
     justify-content: center;
 }
 
@@ -83,4 +83,12 @@
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+.verify {
+    grid-area: verify;
+    width: 50%;
+    justify-self: center;
+    justify-content: center;
+    gap: 1rem;
 }

@@ -10,6 +10,7 @@ class LevelDetails(TypedDict):
     hint: str
     question: List[str]
     initialise_db: str
+    flag: str
 
 
 def initialise(conn: Connection):
@@ -39,7 +40,8 @@ def get_level(conn: Connection, level_id: int) -> Optional[LevelDetails]:
             'description': maybe_level[2],
             'hint': maybe_level[3],
             'question': maybe_level[4].split(','),
-            'initialise_db': maybe_level[5]
+            'initialise_db': maybe_level[5],
+            'flag': maybe_level[6],
         }
 
     return None
