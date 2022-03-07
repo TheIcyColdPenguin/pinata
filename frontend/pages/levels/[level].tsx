@@ -13,9 +13,15 @@ const generateQuery = (template: string[], inputs: string[]) => {
         .join('');
 };
 
+interface Table {
+    columnNames: string[];
+    rows: string[][];
+}
+
 const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
     const [inputs, setInputs] = useState<string[]>(Array(level.question.length - 1).fill(''));
     const [generatedQuery, setGeneratedQuery] = useState(generateQuery(level.question, inputs));
+    const [queryResult, setQueryResult] = useState<Table>();
 
     useEffect(() => {
         setGeneratedQuery(generateQuery(level.question, inputs));
@@ -26,6 +32,34 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
             const newInputs = [...prevInputs];
             newInputs[index] = e.target.value;
             return newInputs;
+        });
+    };
+
+    const attemptlevel = async () => {
+        const serverRes = await fetch(`http://localhost:8000/attempt/${level.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_input: inputs }),
+        });
+
+        if (!serverRes.ok) {
+            alert('ono');
+            return;
+            // TODO: do smth like show a proper popup
+        }
+
+        const res = await serverRes.json();
+
+        if (!res.query_result.length) {
+            setQueryResult(undefined);
+            return;
+        }
+
+        setQueryResult({
+            columnNames: res.column_names,
+            rows: res.query_result,
         });
     };
 
@@ -42,8 +76,37 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
                     <input key={i} value={v} onChange={e => onInput(e, i)} />
                 ))}
             </div>
+            <div className={styles['attempt']}>
+                <button onClick={attemptlevel}>Attempt</button>
+            </div>
             <div className={styles['generated']}>
                 <Code code={generatedQuery} />
+            </div>
+            <div className={styles['table']}>
+                {queryResult && (
+                    <pre>
+                        <code>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        {queryResult.columnNames.map((v, i) => (
+                                            <th key={i}>{v}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {queryResult.rows.map((row, i) => (
+                                        <tr key={i}>
+                                            {row.map((val, i) => (
+                                                <td key={i}>{val}</td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </code>
+                    </pre>
+                )}
             </div>
         </div>
     );

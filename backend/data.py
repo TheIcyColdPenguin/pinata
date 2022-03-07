@@ -47,11 +47,28 @@ def get_level(conn: Connection, level_id: int) -> Optional[LevelDetails]:
 
 def run_query_in_memory(iniitalize_db: Optional[str] = None, query: str = ''):
     new_conn = connect(':memory:')
+    cur = new_conn.cursor()
+
+    res = []
+    column_names = []
+
     if iniitalize_db is not None:
-        new_conn.executescript(iniitalize_db)
+        cur.executescript(iniitalize_db)
         new_conn.commit()
     if query:
-        new_conn.executescript(query)
+        # loop through each command and run it individually
+        for line in query.split('--')[0].split(';'):
+            # do not run if it's whitespace only
+            if not line.strip():
+                continue
+            new_cursor = cur.execute(line)
+
+            column_names = [
+                row[0]
+                for row in new_cursor.description
+                if len(row) > 0
+            ]
+            res = new_cursor.fetchall()
+
         new_conn.commit()
-    print(new_conn.execute(
-        'select name from sqlite_master where type=\'table\'').fetchall())
+    return (column_names, res)

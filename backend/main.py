@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import FastAPI, status, Response
+from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 
 from pydantic import BaseModel
@@ -18,6 +19,18 @@ db_connection = sqlite3.connect('level_data.db')
 initialise(db_connection)  # create and hydrate database if not already done
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get('/levels/all')
@@ -53,6 +66,7 @@ async def attempt(level_id: int, attempt_details: Attempt, response: Response):
     try:
         # get level details
         level_details = get_level(db_connection, level_id)
+
         if level_details is None:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {}
@@ -67,7 +81,10 @@ async def attempt(level_id: int, attempt_details: Attempt, response: Response):
                         attempt_details.user_input, fillvalue='')
         )
 
-        run_query_in_memory(initialise_db, generated_query)
+        column_names, result = run_query_in_memory(
+            initialise_db, generated_query
+        )
+        return {'query_result': result, 'column_names': column_names}
 
     except Exception as e:
         print(e)

@@ -1,6 +1,6 @@
 .main {
     width: 100vw;
-    height: 75vh;
+    height: 90vh;
     display: grid;
     grid-template-areas:
         'title title'
@@ -8,10 +8,13 @@
         'hint hint'
         'query query'
         'input input'
-        'generated generated';
+        'attempt attempt'
+        'generated generated'
+        'table table'
+        'table table';
 
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 3fr 2fr 1fr 2fr 2fr 2fr;
+    grid-template-rows: 3fr 2fr 1fr 2fr 1fr 1fr 2fr;
     justify-content: center;
 }
 
@@ -37,13 +40,27 @@
     grid-area: query;
 }
 
-div.input {
+.input {
     grid-area: input;
     width: 50%;
     justify-self: center;
     justify-content: space-evenly;
 }
-
+.attempt {
+    grid-area: attempt;
+}
 .generated {
     grid-area: generated;
+}
+
+.table {
+    grid-area: table;
+    text-align: center;
+}
+.table > pre,
+.table > pre > code {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
