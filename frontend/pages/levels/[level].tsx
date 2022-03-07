@@ -5,6 +5,7 @@ import { Code } from '../../components/Code';
 
 import styles from '../../styles/Level.module.css';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { UnchangingQuestionPart } from '../../components/UnchangingQuestionPart';
 
 const generateQuery = (template: string[], inputs: string[]) => {
     return template
@@ -65,12 +66,7 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
 
     return (
         <div className={styles['main']}>
-            <div className={styles['title']}>{level.title}</div>
-            <div className={styles['desc']}>{level.description}</div>
-            <div className={styles['hint']}>{level.hint}</div>
-            <div className={styles['query']}>
-                <Code code={level.question.join('')} />
-            </div>
+            <UnchangingQuestionPart level={level} />
             <div className={styles['input']}>
                 {inputs.map((v, i) => (
                     <input key={i} value={v} onChange={e => onInput(e, i)} />

@@ -33,9 +33,29 @@
 .desc {
     grid-area: desc;
 }
+
 .hint {
     grid-area: hint;
 }
+.hint > div {
+    padding: 0.125rem 0.5rem;
+
+    color: #111;
+    background-color: #111;
+    border-radius: 5px;
+
+    transition: all 0.125s ease-in;
+    transition-delay: 0.1s;
+}
+
+.hint > div:hover {
+    background-color: #1112;
+}
+
+.hint > div {
+    user-select: none;
+}
+
 .query {
     grid-area: query;
 }
