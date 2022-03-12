@@ -120,7 +120,20 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
             <UnchangingQuestionPart level={level} />
             <div className={styles['input']}>
                 {inputs.map((v, i) => (
-                    <input key={i} value={v} onChange={e => onInput(e, i)} />
+                    <input
+                        key={i}
+                        value={v}
+                        onChange={e => onInput(e, i)}
+                        onKeyDown={e => {
+                            if (e.key == 'Enter') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                attemptlevel();
+                            }
+                            console.log(e);
+                            return false;
+                        }}
+                    />
                 ))}
             </div>
             <div className={styles['attempt']}>
@@ -162,10 +175,13 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
                         <input
                             value={flagInput}
                             onChange={handleFlag}
-                            onKeyUp={e => {
+                            onKeyDown={e => {
                                 if (e.key == 'Enter') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
                                     verifyLevel();
                                 }
+                                return false;
                             }}
                         />
                     </>
