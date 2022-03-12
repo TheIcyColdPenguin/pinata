@@ -13,10 +13,8 @@ CREATE TABLE IF NOT EXISTS levels (
 INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db, flag, checker) VALUES(
                 0,
                 'The Basics',
-                'This is the most basic exploit,
-we can use this to explain how this whole thing works.
-The initial query could be',
-                'Some hint goes here',
+                'This is the most basic exploit. It works because single quotes are not escaped by the application. Try entering a single quote into the input.',
+                'Add a comment at the end of your malicious input using -- to ignore the rest of the query',
                 'SELECT * FROM users WHERE username = '',,'' AND password = '',,'';',
                 'CREATE TABLE users(
                         id INTEGER PRIMARY KEY,
@@ -37,9 +35,9 @@ The initial query could be',
 INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db, flag, checker)
 VALUES(
                 1,
-                'Exercise 2',
-                'The premise here is that the user can search for items or smth but since it''s vulnerable to injection, we could UNION the result with a malicious query like so',
-                'Some hint goes here',
+                'Unions',
+                'Why execute just one query when we can execute two? Try using a UNION to also show the values in the secret table',
+                'The sqlite_master table should come in handy',
                 'SELECT name, price FROM items WHERE name LIKE ''%,,%'';',
                 'CREATE TABLE items(
                         id INTEGER PRIMARY KEY,
@@ -65,9 +63,9 @@ VALUES(
 INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db, flag, checker)
 VALUES(
                 2,
-                'Exercise 3',
+                'Bobby Tables',
                 'If the application naively executes multiple commands, we can simply run a destructive command after the first command, by cleverly using semicolons.',
-                'Some hint goes here',
+                'Try dropping the users table',
                 'SELECT * FROM users WHERE username='',,'' AND password='',,'';',
                 'CREATE TABLE users(
                         id INTEGER PRIMARY KEY,
@@ -80,16 +78,16 @@ VALUES(
                 INSERT INTO users(username, password) VALUES (''frenkeldefects'', ''sadcatthumb'');
                 INSERT INTO users(username, password) VALUES (''midorisensei'', ''wolf gupta'');
                 ',
-                'flag{l1ttl3_b0bby_t4bl3s}',
+                'flag{l1ttl3_b0bby_t4bl3s_w3_c4ll_h1m}',
                 'SELECT name FROM sqlite_master WHERE name=''users'';'
         );
 
 INSERT OR IGNORE INTO levels(id, title, description, hint, question, initialise_db, flag, checker)
 VALUES(
                 3,
-                'Exercise 4',
-                'This exercise utilises the same principle as the previous one, except, instead of simply causing harm by deleting data, we update an existing record with custom credentials. One could possibly even take over a specific account by changing the password.',
-                'Some hint goes here',
+                'Secrets No More',
+                'This exercise utilises the same principle as the previous one, except instead of simply causing harm by deleting data, we update existing records by changing the passwords of users.',
+                'Use an UPDATE commmand to change the passwrod of the user `ayaya`',
                 'SELECT * FROM users WHERE username='',,'' AND password='',,'';',
                 'CREATE TABLE users(
                         id INTEGER PRIMARY KEY,
@@ -103,6 +101,6 @@ VALUES(
                 INSERT INTO users(username, password) VALUES (''frenkeldefects'', ''sadcatthumb'');
                 INSERT INTO users(username, password) VALUES (''midorisensei'', ''wolf gupta'');
                 ',
-                'flag{gr0wn_up_b0bby_t4bl3s}',
+                'flag{upd4t3_y0ur_s0ftw4r3_n0w}',
                 'SELECT username from users where username = ''ayaya'' and password = ''amogsus'';'
         );

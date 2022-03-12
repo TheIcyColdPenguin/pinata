@@ -17,7 +17,9 @@ export const UnchangingQuestionPart: FC<{ level: UnchangingProps }> = ({
         <>
             {' '}
             <div className={styles['title']}>{title}</div>
-            <div className={styles['desc']}>{description}</div>
+            <div className={styles['desc']}>
+                <p>{description}</p>
+            </div>
             <div className={styles['hint']}>
                 <div>{hint}</div>
             </div>

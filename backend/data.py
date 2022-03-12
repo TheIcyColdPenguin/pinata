@@ -13,6 +13,32 @@ class LevelDetails(TypedDict):
     flag: str
 
 
+def parse_lines(query: str):
+    result = []
+    quote = None
+
+    curr_query = []
+
+    for i in query:
+        if i == ';':
+            if not quote:
+                result.append(''.join(curr_query))
+                curr_query = []
+                continue
+        elif quote == '"' and i == '"':
+            quote = None
+        elif quote == "'" and i == "'":
+            quote = None
+        elif i == "'" or i == "'":
+            quote = i
+        curr_query.append(i)
+
+    if len(curr_query):
+        result.append(''.join(curr_query))
+
+    return result
+
+
 def initialise(conn: Connection):
     sql_file_path = Path(__file__).parent / 'initialise.sql'
 
@@ -65,14 +91,13 @@ def run_query_in_memory(
         new_conn.commit()
     if query:
         # loop through each command and run it individually
-        print('query', query)
         lines = [
             line.strip()
             for line in
-            query.split('--')[0].strip().split(';')
+            parse_lines(query.split('--')[0].strip())
             if line.strip()
         ]
-        print(lines)
+        print(*lines)
         for i, line in enumerate(lines):
             # do not run if it's whitespace only
             new_cursor = cur.execute(line)
