@@ -26,6 +26,7 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
     const [generatedQuery, setGeneratedQuery] = useState(generateQuery(level.question, inputs));
     const [queryResult, setQueryResult] = useState<Table>();
     const [flagInput, setFlagInput] = useState<string>('');
+    const [solved, setSolved] = useState(false);
 
     const router = useRouter();
 
@@ -54,26 +55,36 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
             body: JSON.stringify({ user_input: inputs }),
         });
 
-        if (!serverRes.ok) {
-            alert('ono');
-            return;
-            // TODO: do smth like show a proper popup
+        try {
+            const res = await serverRes.json();
+
+            if (res.error) {
+                alert(res.error);
+                return;
+            }
+
+            if (!res.query_result.length) {
+                setQueryResult(undefined);
+                return;
+            }
+
+            setQueryResult({
+                columnNames: res.column_names,
+                rows: res.query_result,
+            });
+        } catch {
+            if (!serverRes.ok) {
+                alert('Something went wrong talking to the server');
+                return;
+                // TODO: do smth like show a proper popup
+            }
         }
-
-        const res = await serverRes.json();
-
-        if (!res.query_result.length) {
-            setQueryResult(undefined);
-            return;
-        }
-
-        setQueryResult({
-            columnNames: res.column_names,
-            rows: res.query_result,
-        });
     };
 
     const verifyLevel = async () => {
+        if (solved) {
+            return;
+        }
         const serverRes = await fetch(`http://localhost:8000/verify/${level.id}`, {
             method: 'POST',
             headers: {
@@ -92,6 +103,12 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
 
         if (res.correct) {
             alert('Congrats! You got the flag!');
+
+            let currentSolves = JSON.parse(sessionStorage.getItem('solved') || '{}');
+            currentSolves[level.id] = true;
+            sessionStorage.setItem('solved', JSON.stringify(currentSolves));
+            setSolved(true);
+
             router.push('/');
         } else {
             alert("Welp, that isn't the flag");

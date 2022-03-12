@@ -79,20 +79,27 @@ async def attempt(level_id: int, attempt_details: Attempt, response: Response):
         # this is unsafe and should only be run on in-memory database connections
         level_query_template = level_details['question']
         initialise_db = level_details['initialise_db']
+        checker = level_details['checker']
+        flag = level_details['flag']
         generated_query = ''.join(
             i+j for i, j in
             zip_longest(level_query_template,
                         attempt_details.user_input, fillvalue='')
         )
 
-        column_names, result = run_query_in_memory(
-            initialise_db, generated_query
-        )
-        return {'query_result': result, 'column_names': column_names}
+        try:
+            print('huh')
+            column_names, result = run_query_in_memory(
+                initialise_db, generated_query, checker or '', flag,
+            )
+
+            return {'query_result': result, 'column_names': column_names}
+        except sqlite3.OperationalError as e:
+            return {'error': str(e)}
 
     except Exception as e:
-        print(e)
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {'error': str(e)}
 
     return {}
 

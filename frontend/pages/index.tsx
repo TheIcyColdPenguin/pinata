@@ -9,6 +9,19 @@ const Home: FC<{ levels: string[] }> = ({ levels }) => {
     const [selectedLevel, setSelectedLevel] = useState(0);
     const router = useRouter();
 
+    let finished: boolean = false;
+
+    if (typeof window != 'undefined') {
+        let solved = sessionStorage.getItem('solved');
+        if (!solved) {
+            solved = '{}';
+            sessionStorage.setItem('solved', '{}');
+        }
+
+        let parsedSolved: { [id: number]: boolean } = JSON.parse(solved);
+
+        finished = levels.reduce((acc: boolean, _, i) => acc && parsedSolved[i], true);
+    }
     const goToLevel = (e: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         router.push(`/levels/${selectedLevel}`);
@@ -33,12 +46,12 @@ const Home: FC<{ levels: string[] }> = ({ levels }) => {
                             </option>
                         ))}
                     </select>
-                    <button type="submit"  onClick={goToLevel}>
+                    <button type="submit" onClick={goToLevel}>
                         Attempt level
                     </button>
                 </form>
             </div>
-            <div></div>
+            <div>{finished && "Congratulations! You've completed all levels!"}</div>
         </div>
     );
 };
