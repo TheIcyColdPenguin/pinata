@@ -102,7 +102,6 @@ def run_query_in_memory(
             # do not run if it's whitespace only
             new_cursor = cur.execute(line)
             if i == len(lines) - 1:
-                print('ok')
                 if new_cursor.description is None:
                     break
                 column_names = [
@@ -111,7 +110,6 @@ def run_query_in_memory(
                     if len(row) > 0
                 ]
                 res = new_cursor.fetchall()
-                print('odd')
             else:
                 new_cursor.fetchall()
         new_conn.commit()

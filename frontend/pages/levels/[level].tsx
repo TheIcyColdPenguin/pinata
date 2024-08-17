@@ -9,6 +9,8 @@ import styles from '../../styles/Level.module.css';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { UnchangingQuestionPart } from '../../components/UnchangingQuestionPart';
 
+import { motion } from 'framer-motion';
+
 const generateQuery = (template: string[], inputs: string[]) => {
     return template
         .flatMap((v, i) => [v, inputs[i]])
@@ -27,12 +29,39 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
     const [queryResult, setQueryResult] = useState<Table>();
     const [flagInput, setFlagInput] = useState<string>('');
     const [solved, setSolved] = useState(false);
+    const [animate, setAnimate] = useState(false);
+    const [pinataPositions, setPinataPositions] = useState<{ x: number; rotation: number }[]>([]);
 
     const router = useRouter();
 
     useEffect(() => {
+        const pinatas = Array(20)
+            .fill(0)
+            .map(() => ({
+                x: Math.floor(Math.random() * window.innerWidth),
+                rotation: Math.floor(Math.random() * 180) - 90,
+            }));
+
+        setPinataPositions(pinatas);
+    }, []);
+
+    useEffect(() => {
         setGeneratedQuery(generateQuery(level.question, inputs));
     }, [inputs]);
+
+    useEffect(() => {
+        if (solved) {
+            router.push('/');
+        }
+    }, [solved]);
+
+    useEffect(() => {
+        if (!animate) {
+            return;
+        }
+
+        setTimeout(() => setSolved(true), 3000);
+    }, [animate]);
 
     const onInput = (e: ChangeEvent<HTMLInputElement>, index: number) => {
         setInputs(prevInputs => {
@@ -102,92 +131,101 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
         const res = await serverRes.json();
 
         if (res.correct) {
-            alert('Congrats! You got the flag!');
-
             let currentSolves = JSON.parse(sessionStorage.getItem('solved') || '{}');
             currentSolves[level.id] = true;
             sessionStorage.setItem('solved', JSON.stringify(currentSolves));
-            setSolved(true);
 
-            router.push('/');
+            setAnimate(true);
         } else {
             alert("Welp, that isn't the flag");
         }
     };
 
     return (
-        <div className={styles['main']}>
-            <UnchangingQuestionPart level={level} />
-            <div className={styles['input']}>
-                {inputs.map((v, i) => (
-                    <input
-                        key={i}
-                        value={v}
-                        onChange={e => onInput(e, i)}
-                        onKeyDown={e => {
-                            if (e.key == 'Enter') {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                attemptlevel();
-                            }
-                            console.log(e);
-                            return false;
-                        }}
-                    />
-                ))}
-            </div>
-            <div className={styles['attempt']}>
-                <button onClick={attemptlevel}>Attempt</button>
-            </div>
-            <div className={styles['generated']}>
-                <Code code={generatedQuery} />
-            </div>
-            <div className={styles['table']}>
-                {queryResult && (
-                    <pre>
-                        <code>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        {queryResult.columnNames.map((v, i) => (
-                                            <th key={i}>{v}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {queryResult.rows.map((row, i) => (
-                                        <tr key={i}>
-                                            {row.map((val, i) => (
-                                                <td key={i}>{val}</td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </code>
-                    </pre>
-                )}
-            </div>
-            <div className={styles['verify']}>
-                {queryResult && (
-                    <>
-                        <div>Enter flag: </div>
+        <>
+            <div className={styles['main']}>
+                <UnchangingQuestionPart level={level} />
+                <div className={styles['input']}>
+                    {inputs.map((v, i) => (
                         <input
-                            value={flagInput}
-                            onChange={handleFlag}
+                            key={i}
+                            value={v}
+                            onChange={e => onInput(e, i)}
                             onKeyDown={e => {
                                 if (e.key == 'Enter') {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    verifyLevel();
+                                    attemptlevel();
                                 }
+                                console.log(e);
                                 return false;
                             }}
                         />
-                    </>
-                )}
+                    ))}
+                </div>
+                <div className={styles['attempt']}>
+                    <button onClick={attemptlevel}>Attempt</button>
+                </div>
+                <div className={styles['generated']}>
+                    <Code code={generatedQuery} />
+                </div>
+                <div className={styles['table']}>
+                    {queryResult && (
+                        <pre>
+                            <code>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            {queryResult.columnNames.map((v, i) => (
+                                                <th key={i}>{v}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {queryResult.rows.map((row, i) => (
+                                            <tr key={i}>
+                                                {row.map((val, i) => (
+                                                    <td key={i}>{val}</td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </code>
+                        </pre>
+                    )}
+                </div>
+                <div className={styles['verify']}>
+                    {queryResult && (
+                        <>
+                            <div>Enter flag: </div>
+                            <input
+                                value={flagInput}
+                                onChange={handleFlag}
+                                onKeyDown={e => {
+                                    if (e.key == 'Enter') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        verifyLevel();
+                                    }
+                                    return false;
+                                }}
+                            />
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
+            {animate &&
+                pinataPositions.map((pos, i) => (
+                    <motion.img
+                        src="/pinata.png"
+                        className={styles['pinata']}
+                        style={{ left: `${pos.x - 300}px`, rotate: `${pos.rotation}deg` }}
+                        animate={{ top: [-0.5 * window.innerHeight, 1.25 * window.innerHeight] }}
+                        transition={{ duration: 1, ease: 'easeIn', delay: i / 20 }}
+                    />
+                ))}
+        </>
     );
 };
 
@@ -200,7 +238,8 @@ export const getStaticProps: GetStaticProps<any, { level: string }> = async cont
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const numLevels: number = (await (await fetch('http://localhost:8000/levels/all')).json()).length;
+    const numLevels: number = (await (await fetch('http://localhost:8000/levels/all')).json())
+        .length;
 
     const paths = Array(numLevels)
         .fill(0)

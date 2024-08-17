@@ -96,3 +96,9 @@
     justify-content: center;
     gap: 1rem;
 }
+
+.pinata {
+    position: absolute;
+    scale: 0.4;
+    transform-origin: center;
+}

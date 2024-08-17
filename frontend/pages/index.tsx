@@ -29,14 +29,14 @@ const Home: FC<{ levels: string[] }> = ({ levels }) => {
 
     return (
         <div className={styles['grid']}>
-            <div className={styles['title']}>SQL Injection</div>
+            <div className={styles['title']}>Piñata</div>
             <div>sql injection is cool or smth</div>
             <div>
                 <form className={styles['level-picker']}>
                     <select
                         name="level"
                         defaultValue={selectedLevel}
-                        onChange={e => {
+                        onChange={(e) => {
                             setSelectedLevel(Number.parseInt(e.target.value));
                         }}
                     >
