@@ -218,6 +218,7 @@ const Level: NextPage<{ level: LevelDetails }> = ({ level }) => {
             {animate &&
                 pinataPositions.map((pos, i) => (
                     <motion.img
+                        key={i}
                         src="/pinata.png"
                         className={styles['pinata']}
                         style={{ left: `${pos.x - 300}px`, rotate: `${pos.rotation}deg` }}
